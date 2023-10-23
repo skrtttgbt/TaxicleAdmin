@@ -36,7 +36,7 @@ function UserManagement() {
 
     const onDelete = (userEmail) => {
         console.log(userEmail)
-        axios.get(`https://taxicleserver.onrender.com/delete-user/${userEmail}`).then(res => {
+        axios.post(`https://taxicleserver.onrender.com/delete-user/${userEmail}`).then(res => {
             if(res.data === "Success") {
               navigate('/user-management')
             }
