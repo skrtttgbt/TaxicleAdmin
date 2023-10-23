@@ -33,6 +33,15 @@ function UserManagement() {
             || f.PlateNum.toLowerCase().includes(value)
         ))
     }
+
+    const onDelete = (userEmail) => {
+        console.log(userEmail)
+        axios.get(`https://taxicleserver.onrender.com/delete-user/${userEmail}`).then(res => {
+            if(res.data === "Success") {
+              navigate('/user-management')
+            }
+        })
+    }
   return (
     <main class="main-container">
         <div class="table-responsive">
@@ -76,7 +85,7 @@ function UserManagement() {
                             <td>{data.PlateNum}</td>
                             <td>{data.LicenseNum}</td>
                             <td>
-                                <a href="..#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                                <a onClick={onDelete(data.Email)} class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
                             </td>
                         </tr>   
                         ))}       

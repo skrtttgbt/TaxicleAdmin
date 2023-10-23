@@ -121,7 +121,7 @@ function Home() {
              editFare ?
             <div className='card-inner'>
                 <h1>₱{data.MinimumFare }</h1>
-                <a href="..#" class="card_icon" title="Edit" onClick={TriggerToggleFare} data-toggle="tooltip"><i class="material-icons" style={{color:'white'}}>&#xE254;</i></a>
+                <a class="card_icon" title="Edit" onClick={TriggerToggleFare} data-toggle="tooltip"><i class="material-icons" style={{color:'white'}}>&#xE254;</i></a>
             </div>
             :
               <form onSubmit={handleSubmit} name='MinimumFareEvent'>
@@ -143,7 +143,7 @@ function Home() {
           editDiscount  ?
            <div className='card-inner'>
           <h1>- ₱{data.Discount}</h1>
-          <a href="..#" class="card_icon" title="Edit" onClick={TriggerToggleDiscount} data-toggle="tooltip"><i class="material-icons" style={{color:'white'}}>&#xE254;</i></a>
+          <a class="card_icon" title="Edit" onClick={TriggerToggleDiscount} data-toggle="tooltip"><i class="material-icons" style={{color:'white'}}>&#xE254;</i></a>
           </div>
           :
           <form onSubmit={handleSubmit} name='DiscountEvent'>
@@ -165,7 +165,7 @@ function Home() {
           
           <div className='card-inner'>
           <h1>+ ₱{data.Exceeding}</h1>
-            <a href="..#" class="card_icon" title="Edit" onClick={TriggerToggleExceeding} data-toggle="tooltip"><i class="material-icons" style={{color:'white'}}>&#xE254;</i></a>
+            <a class="card_icon" title="Edit" onClick={TriggerToggleExceeding} data-toggle="tooltip"><i class="material-icons" style={{color:'white'}}>&#xE254;</i></a>
           </div>
           :
           <form onSubmit={handleSubmit} name='ExceedingEvent'>
