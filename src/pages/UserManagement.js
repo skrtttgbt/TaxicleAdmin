@@ -85,7 +85,7 @@ function UserManagement() {
                             <td>{data.PlateNum}</td>
                             <td>{data.LicenseNum}</td>
                             <td>
-                                <a onClick={onDelete(data.Email)} class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                                <a onClick={onDelete(data[i].Email)} class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
                             </td>
                         </tr>   
                         ))}       
