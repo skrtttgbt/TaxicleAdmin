@@ -15,13 +15,15 @@ function UserManagement() {
             navigate('/')
           }
         }).catch(err =>console.log(err));
+    },[])
+    useEffect(()=>{
         axios.get('https://taxicleserver.onrender.com/admin-user')
         .then(res => {
             setUserId(res.data.data)
             setResult(res.data.data)
         }
              ).catch(err => console.log(err))
-    },[])
+    })
 
     function filter(event) {
         const value = event.target.value.toLowerCase()
