@@ -33,6 +33,10 @@
       "not dead",
       "not op_mini all"
     ],
+    "browserslist": [
+      "defaults and fully supports es6-module",
+      "maintained node versions"
+    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
