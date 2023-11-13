@@ -23,7 +23,7 @@ function UserManagement() {
             setResult(res.data.data)
         }
              ).catch(err => console.log(err))
-    })
+    },[])
 
     function filter(event) {
         const value = event.target.value.toLowerCase()
