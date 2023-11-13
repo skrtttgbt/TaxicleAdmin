@@ -9,10 +9,11 @@ import axios from 'axios';
 function SideBar({openSidebarToggle,  OpenSidebar}) {
     const navigate = useNavigate()
     const handleLogOut = () => {
+        //shut session
         axios.get('https://taxicleserver.onrender.com/admin-logout' ,{withCredentials:true})
         .then(res=>{
             if(res.data.Status === "Success") {
-                navigate('/')
+                navigate('/') // to home 
             }
         }).catch(err => console.log(err))
     }

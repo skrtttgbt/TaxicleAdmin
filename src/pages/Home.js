@@ -56,8 +56,6 @@ function Home() {
           setEditExceeding(!editExceeding)
         }
       }
-
-      // <Toast />
     }
   ).catch(err => console.log(err))
   }
