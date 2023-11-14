@@ -23,7 +23,6 @@ function UserManagement() {
             setResult(res.data.data)
         }
              ).catch(err => console.log(err))
-
     },[])
 
     function filter(event) {
@@ -44,6 +43,12 @@ function UserManagement() {
               navigate('/user-management')
             }
         })
+        axios.get('https://taxicleserver.onrender.com/admin-user')
+        .then(res => {
+            setUserId(res.data.data)
+            setResult(res.data.data)
+        }
+             ).catch(err => console.log(err))
     }
   return (
     <main class="main-container">
