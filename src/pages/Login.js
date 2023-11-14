@@ -12,6 +12,7 @@ export default function Login(){
   })
   const navigate = useNavigate()
   useEffect(()=>{
+    // check session
     axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
     .then(res => {
       if(res.data.valid) {
@@ -23,6 +24,7 @@ export default function Login(){
   },[])
 
   const handleSubmit = async (event) => {
+    //when login
     event.preventDefault()
     try {
       axios.post('https://taxicleserver.onrender.com/admin-login', values ,{withCredentials:true})
@@ -40,6 +42,7 @@ export default function Login(){
   };
 
   const handleChange = (event) => {
+    //setting values
       setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
   }
 
