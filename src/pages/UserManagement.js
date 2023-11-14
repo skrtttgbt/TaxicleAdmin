@@ -22,6 +22,7 @@ function UserManagement() {
             setUserId(res.data.data)
         }
              ).catch(err => console.log(err))
+        setResult(userId)
     },[])
 
     function filter(event) {
