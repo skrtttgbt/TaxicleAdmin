@@ -20,7 +20,6 @@ function UserManagement() {
         axios.get('https://taxicleserver.onrender.com/admin-user')
         .then(res => {
             setUserId(res.data.data)
-            setResult(res.data.data)
         }
              ).catch(err => console.log(err))
     },[])
