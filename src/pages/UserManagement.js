@@ -20,15 +20,16 @@ function UserManagement() {
         axios.get('https://taxicleserver.onrender.com/admin-user')
         .then(res => {
             setUserId(res.data.data)
+            setResult(res.data.data)
         }
              ).catch(err => console.log(err))
-        setResult(userId)
+
     },[])
 
     function filter(event) {
         const value = event.target.value.toLowerCase()
         setResult(
-            userId.filter(f => f.Email.toLowerCase().includes(value) 
+            Result.filter(f => f.Email.toLowerCase().includes(value) 
             || f.FirstName.toLowerCase().includes(value)
             || f.LastName.toLowerCase().includes(value)
             || f.PhoneNumber.toLowerCase().includes(value)
