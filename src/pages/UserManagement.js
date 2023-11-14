@@ -29,7 +29,7 @@ function UserManagement() {
     function filter(event) {
         const value = event.target.value.toLowerCase()
         setResult(
-            Result.filter(f => f.Email.toLowerCase().includes(value) 
+            userId.filter(f => f.Email.toLowerCase().includes(value) 
             || f.FirstName.toLowerCase().includes(value)
             || f.LastName.toLowerCase().includes(value)
             || f.PhoneNumber.toLowerCase().includes(value)
