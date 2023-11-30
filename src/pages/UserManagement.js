@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-
+import { Modal, Carousel, DropdownButton, Dropdown } from 'react-bootstrap';
+import { FaRegEye } from "react-icons/fa";
+// import ImageModal from './ImageModal'; 
+// import testData from './testingData' //for testing
 function UserManagement() {
     const [userId , setUserId] = useState([])
     const [Result, setResult] = useState([])
-    const navigate = useNavigate()
+    // const [userId, setUserId] = useState(testData); // Set initial state with test data
+    // const [Result, setResult] = useState(testData); // Set initial result state with test data
+
+    const [showModal, setShowModal] = useState(false); // State to control modal visibility
+    const [selectedImages, setSelectedImages] = useState([]); // State to store selected image path
+    const navigate = useNavigate() 
+
     useEffect(()=>{
         axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
         .then(res => {
@@ -25,15 +34,28 @@ function UserManagement() {
              ).catch(err => console.log(err))
     },[])
 
+    const handleImageClick = (images) => {
+        setSelectedImages(images.map((image) => process.env.PUBLIC_URL + image));
+        setShowModal(true);
+    };
+    
+    const handleCloseModal = () => {
+        setSelectedImages([]); // Clear selected images when closing modal
+        setShowModal(false);
+    };
+
     function filter(event) {
         const value = event.target.value.toLowerCase()
         setResult(
-            userId.filter(f => f.Email.toLowerCase().includes(value) 
+            userId.filter( 
+            (f) => 
+               f.Email.toLowerCase().includes(value) 
             || f.FirstName.toLowerCase().includes(value)
             || f.LastName.toLowerCase().includes(value)
             || f.PhoneNumber.toLowerCase().includes(value)
             || f.PlateNum.toLowerCase().includes(value)
-        ))
+            || f.LicenseNum.toLowerCase().includes(value)
+        ));
     }
 
     const onDelete = (userEmail) => {
@@ -50,6 +72,37 @@ function UserManagement() {
         }
              ).catch(err => console.log(err))
     }
+    const handleStatusChange = (userEmail, newStatus) => {
+        // Find the user by email
+        const userToUpdate = userId.find(user => user.Email === userEmail);
+      
+        // Check if the status is actually changing
+        if (userToUpdate && userToUpdate.Status !== newStatus) {
+          // Update the status
+          userToUpdate.Status = newStatus;
+      
+          // Update the state
+          setUserId([...userId]);
+      
+          // Implement the logic to update the user status in the backend
+          axios.post(`https://taxicleserver.onrender.com/update-user-status/${userEmail}`, { status: newStatus })
+            .then(res => {
+              // Handle the response if needed
+              console.log(`Status updated successfully to ${newStatus}`);
+            })
+            .catch(err => {
+              // Handle errors
+              console.log(err);
+              // Revert the local state change if the backend call fails
+              userToUpdate.Status = userToUpdate.Status; // Set it back to the original status
+              setUserId([...userId]);
+            });
+        } else {
+          // Log or handle the case where the status is not changing
+          console.log(`Status is not changing for user ${userEmail}`);
+        }
+      };
+      
   return (
     <main class="main-container">
         <div class="table-responsive">
@@ -79,12 +132,14 @@ function UserManagement() {
                             <th>User Type</th>
                             <th>Plate Number</th>
                             <th>License Number</th>
+                            <th>Upload</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         { Result.map((data, i) =>(
-                        <tr>
+                        <tr key={i}>
                             <td>{data.idusers}</td>
                             <td>{(data.FirstName+ " " + data.LastName).toUpperCase()}</td>
                             <td>{data.Email}</td>
@@ -92,8 +147,26 @@ function UserManagement() {
                             <td>{data.UserType}</td>
                             <td>{data.PlateNum}</td>
                             <td>{data.LicenseNum}</td>
-                            <td>
-                                <a onClick={ () => onDelete(data.Email)} class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                            <td className='view-btn'>
+                                {data.Upload && data.Upload.length > 0 && (
+                                    <button
+                                        type="button"
+                                        className="btn btn-link"
+                                        style={{ padding: '0' }}
+                                        onClick={() => handleImageClick(data.Upload)}>
+                                        <FaRegEye /> view upload
+                                    </button>
+                                )}
+                            </td>
+                            <td>{/* Dropdown for selecting status */}
+                                <DropdownButton id={`dropdownMenu${i}`} title="Change Status">
+                                    <Dropdown.Item onClick={() => handleStatusChange(data.Email, 'pending')}>Pending</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => handleStatusChange(data.Email, 'not-verified')}>Not Verified</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => handleStatusChange(data.Email, 'verified')}>Verified</Dropdown.Item>
+                                </DropdownButton>
+                            </td>
+                            <td className='act-btn'>
+                                <a onClick={() => onDelete(data.Email)} className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons">&#xE872;</i></a>
                             </td>
                         </tr>   
                         ))}       
@@ -105,4 +178,4 @@ function UserManagement() {
   )
 }
 
-export default UserManagement
+export default UserManagement;
