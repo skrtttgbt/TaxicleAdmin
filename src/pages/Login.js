@@ -14,8 +14,8 @@ export default function Login(){
   const navigate = useNavigate()
   useEffect(()=>{
     // check session
-    // axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
-    axios.get('http://localhost:20074/admin')
+    axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
+    // axios.get('http://localhost:20074/admin',{withCredentials:true})
     .then(res => {
       if(res.data.valid) {
         navigate('/dashboard')
@@ -29,7 +29,8 @@ export default function Login(){
     //when login
     event.preventDefault()
     try {
-      axios.post('http://localhost:20074/admin-login', values ,{withCredentials:true})
+      axios.post('https://taxicleserver.onrender.com/admin-login', values ,{withCredentials:true})
+      // axios.get('http://localhost:20074/admin-login',values,{withCredentials:true})
       .then(res => {
         if(res.data.Login){
           navigate('/dashboard')
