@@ -18,7 +18,7 @@ function UserManagement() {
 
     useEffect(()=>{
         axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
-        axios.get('http://localhost:20074/admin')
+        // axios.get('http://localhost:20074/admin')
         .then(res => {
           if(res.data.valid) {
             navigate('/user-management')
@@ -29,7 +29,7 @@ function UserManagement() {
     },[])
     useEffect(()=>{
         axios.get('https://taxicleserver.onrender.com/admin-user')
-    axios.get('http://localhost:20074/admin-user')
+    // axios.get('http://localhost:20074/admin-user')
         .then(res => {
             setUserId(res.data.data)
             setResult(res.data.data)
