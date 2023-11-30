@@ -4,6 +4,7 @@ import Logo from '../taxicle.png'
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
 
+
 export default function Login(){
   const [errorMessage, setErrorMessage] = useState('')
   const [values, setValues] = useState({
@@ -13,7 +14,8 @@ export default function Login(){
   const navigate = useNavigate()
   useEffect(()=>{
     // check session
-    axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
+    // axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
+    axios.get('http://localhost:20074/admin')
     .then(res => {
       if(res.data.valid) {
         navigate('/dashboard')
@@ -27,7 +29,7 @@ export default function Login(){
     //when login
     event.preventDefault()
     try {
-      axios.post('https://taxicleserver.onrender.com/admin-login', values ,{withCredentials:true})
+      axios.post('http://localhost:20074/admin-login', values ,{withCredentials:true})
       .then(res => {
         if(res.data.Login){
           navigate('/dashboard')

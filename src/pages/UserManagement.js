@@ -3,13 +3,14 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { Modal, Carousel, DropdownButton, Dropdown } from 'react-bootstrap';
 import { FaRegEye } from "react-icons/fa";
-// import ImageModal from './ImageModal'; 
-// import testData from './testingData' //for testing
+import ImageModal from './ImageModal'; 
+import { imageDB } from '../config/config'
+import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
+
 function UserManagement() {
     const [userId , setUserId] = useState([])
     const [Result, setResult] = useState([])
-    // const [userId, setUserId] = useState(testData); // Set initial state with test data
-    // const [Result, setResult] = useState(testData); // Set initial result state with test data
+    const [Images, setImg] = useState([])
 
     const [showModal, setShowModal] = useState(false); // State to control modal visibility
     const [selectedImages, setSelectedImages] = useState([]); // State to store selected image path
@@ -17,6 +18,7 @@ function UserManagement() {
 
     useEffect(()=>{
         axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
+        axios.get('http://localhost:20074/admin')
         .then(res => {
           if(res.data.valid) {
             navigate('/user-management')
@@ -27,6 +29,7 @@ function UserManagement() {
     },[])
     useEffect(()=>{
         axios.get('https://taxicleserver.onrender.com/admin-user')
+    axios.get('http://localhost:20074/admin-user')
         .then(res => {
             setUserId(res.data.data)
             setResult(res.data.data)
@@ -57,7 +60,7 @@ function UserManagement() {
             || f.LicenseNum.toLowerCase().includes(value)
         ));
     }
-
+    
     const onDelete = (userEmail) => {
         console.log(userEmail)
         axios.post(`https://taxicleserver.onrender.com/delete-user/${userEmail}`).then(res => {
@@ -102,7 +105,16 @@ function UserManagement() {
           console.log(`Status is not changing for user ${userEmail}`);
         }
       };
-      
+      const traverseImg = (email)  => {
+        listAll(ref(imageDB, `${email}/`)).then(imgs=>{
+            console.log(imgs)
+            imgs.items.forEach(val=>{
+                getDownloadURL(val).then(url=>{
+                    setImg(data=>[...data,url])
+                })
+            })
+        })
+      }
   return (
     <main class="main-container">
         <div class="table-responsive">
@@ -148,15 +160,13 @@ function UserManagement() {
                             <td>{data.PlateNum}</td>
                             <td>{data.LicenseNum}</td>
                             <td className='view-btn'>
-                                {data.Upload && data.Upload.length > 0 && (
-                                    <button
-                                        type="button"
-                                        className="btn btn-link"
-                                        style={{ padding: '0' }}
-                                        onClick={() => handleImageClick(data.Upload)}>
-                                        <FaRegEye /> view upload
-                                    </button>
-                                )}
+                                {traverseImg(data.Email) }
+                                {
+                                Images.map(dataVal=><div>
+                                            <img src={dataVal} height="200px" width="200px" />
+                                            <br/> 
+                                        </div>)
+                                                }
                             </td>
                             <td>{/* Dropdown for selecting status */}
                                 <DropdownButton id={`dropdownMenu${i}`} title="Change Status">
@@ -174,6 +184,10 @@ function UserManagement() {
                 </table>
             </div>
         </div>  
+        {showModal? 
+        <ImageModal /> :
+        <></>
+        }
     </main> 
   )
 }
