@@ -17,8 +17,7 @@ function UserManagement() {
     const navigate = useNavigate() 
 
     useEffect(()=>{
-        // axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
-        axios.get('http://localhost:3000/admin' ,{withCredentials:true})
+        axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
         .then(res => {
             console.log(res.data)
           if(res.data.Login) {
@@ -29,8 +28,7 @@ function UserManagement() {
         }).catch(err =>console.log(err));
     },[])
     useEffect(()=>{
-        // axios.get('https://taxicleserver.onrender.com/admin-user')
-    axios.get('http://localhost:3000/admin-user')
+        axios.get('https://taxicleserver.onrender.com/admin-user')
         .then(res => {
             setUserId(res.data.data)
             setResult(res.data.data)
