@@ -16,20 +16,23 @@ function Home() {
     Exceeding: 0,
   })
   useEffect(()=>{
-    axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
+    // axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
+    axios.get('http://localhost:20074/admin', {withCredentials:true})
     .then(res => {
-      if(res.data.valid) {
+      console.log(res.data)
+      if(res.data.user) {
         navigate('/dashboard')
       }else{
         navigate('/')
       }
     }).catch(err =>console.log(err));
 
-    axios.get('https://taxicleserver.onrender.com/admin-user')
+    // axios.get('https://taxicleserver.onrender.com/admin-user')
+    axios.get('http://localhost:20074/admin-user',{withCredentials:true})
     .then(res => {
-      setUserCount((res.data.data).length)
-      setUserId(res.data.data)
-      setFare(res.data.fare)
+      // setUserCount((res.data.data).length)
+      // setUserId(res.data.data)
+      // setFare(res.data.fare)
     }
   ).catch(err => console.log(err))
 })

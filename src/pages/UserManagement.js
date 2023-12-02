@@ -17,10 +17,11 @@ function UserManagement() {
     const navigate = useNavigate() 
 
     useEffect(()=>{
-        axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
-        // axios.get('http://localhost:20074/admin')
+        // axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
+        axios.get('http://localhost:20074/admin' ,{withCredentials:true})
         .then(res => {
-          if(res.data.valid) {
+            console.log(res.data)
+          if(res.data.Login) {
             navigate('/user-management')
           }else{
             navigate('/')
@@ -28,8 +29,8 @@ function UserManagement() {
         }).catch(err =>console.log(err));
     },[])
     useEffect(()=>{
-        axios.get('https://taxicleserver.onrender.com/admin-user')
-    // axios.get('http://localhost:20074/admin-user')
+        // axios.get('https://taxicleserver.onrender.com/admin-user')
+    axios.get('http://localhost:20074/admin-user')
         .then(res => {
             setUserId(res.data.data)
             setResult(res.data.data)
@@ -63,12 +64,14 @@ function UserManagement() {
     
     const onDelete = (userEmail) => {
         console.log(userEmail)
-        axios.post(`https://taxicleserver.onrender.com/delete-user/${userEmail}`).then(res => {
+        // axios.post(`https://taxicleserver.onrender.com/delete-user/${userEmail}`).then(res => {
+            axios.post(`hhttp://localhost:20074/delete-user/${userEmail}`).then(res => {
             if(res.data === "Success") {
               navigate('/user-management')
             }
         })
-        axios.get('https://taxicleserver.onrender.com/admin-user')
+        // axios.get('https://taxicleserver.onrender.com/admin-user')
+        axios.get('http://localhost:20074/admin-user')
         .then(res => {
             setUserId(res.data.data)
             setResult(res.data.data)
