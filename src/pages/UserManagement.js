@@ -104,16 +104,23 @@ function UserManagement() {
           console.log(`Status is not changing for user ${userEmail}`);
         }
       };
-      const traverseImg = (email)  => {
-        listAll(ref(imageDB, `${email}/`)).then(imgs=>{
-            console.log(imgs)
-            imgs.items.forEach(val=>{
-                getDownloadURL(val).then(url=>{
-                    setImg(data=>[...data,url])
-                })
-            })
-        })
-      }
+      const traverseImg = (email) => {
+        listAll(ref(imageDB, `${email}/`))
+          .then((imgs) => {
+            const promises = imgs.items.map((val) => {
+              return getDownloadURL(val).then((url) => url);
+            });
+      
+            return Promise.all(promises);
+          })
+          .then((urls) => {
+            setImg(urls);
+          })
+          .catch((error) => {
+            // Handle any errors here
+            console.error("Error fetching images:", error);
+          });
+      };
   return (
     <main class="main-container">
         <div class="table-responsive">
@@ -133,54 +140,56 @@ function UserManagement() {
                         </div>
                     </div>
                 </div>
-                <table class="table table-striped table-hover table-bordered">
-                    <thead>
-                        <tr>
-                            <th>UserID</th>
-                            <th>Full Name</th>
-                            <th>Email Address</th>
-                            <th>Phone Number</th>
-                            <th>User Type</th>
-                            <th>Plate Number</th>
-                            <th>License Number</th>
-                            <th>Upload</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { Result.map((data, i) =>(
-                        <tr key={i}>
-                            <td>{data.idusers}</td>
-                            <td>{(data.FirstName+ " " + data.LastName).toUpperCase()}</td>
-                            <td>{data.Email}</td>
-                            <td>{data.PhoneNumber}</td>
-                            <td>{data.UserType}</td>
-                            <td>{data.PlateNum}</td>
-                            <td>{data.LicenseNum}</td>
-                            <td className='view-btn'>
-                                {traverseImg(data.Email) }
-                                {
-                                Images.map(dataVal=><div>
-                                            <img src={dataVal} height="200px" width="200px" />
-                                            <br/> 
-                                        </div>)
-                                                }
-                            </td>
-                            <td>{/* Dropdown for selecting status */}
-                                <DropdownButton id={`dropdownMenu${i}`} title="Change Status">
-                                    <Dropdown.Item onClick={() => handleStatusChange(data.Email, 'pending')}>Pending</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => handleStatusChange(data.Email, 'not-verified')}>Not Verified</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => handleStatusChange(data.Email, 'verified')}>Verified</Dropdown.Item>
-                                </DropdownButton>
-                            </td>
-                            <td className='act-btn'>
-                                <a onClick={() => onDelete(data.Email)} className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons">&#xE872;</i></a>
-                            </td>
-                        </tr>   
-                        ))}       
-                    </tbody>
-                </table>
+                <table className="table table-striped table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>UserID</th>
+            <th>Full Name</th>
+            <th>Email Address</th>
+            <th>Phone Number</th>
+            <th>User Type</th>
+            <th>Plate Number</th>
+            <th>License Number</th>
+            <th>Upload</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {Result.map((data, i) => (
+            <tr key={i}>
+                <td>{data.idusers}</td>
+                <td>{`${data.FirstName} ${data.LastName}`.toUpperCase()}</td>
+                <td>{data.Email}</td>
+                <td>{data.PhoneNumber}</td>
+                <td>{data.UserType}</td>
+                <td>{data.PlateNum}</td>
+                <td>{data.LicenseNum}</td>
+                <td>
+                    {traverseImg(data.Email)}
+                    {Images.map((dataVal, index) => (
+                        <div key={index}>
+                            <img src={dataVal} height="200px" width="200px" alt={`Image ${index}`} />
+                            <br />
+                        </div>
+                    ))}
+                </td>
+                <td>
+                    {/* Dropdown for selecting status */}
+                    <DropdownButton id={`dropdownMenu${i}`} title="Change Status">
+                        <Dropdown.Item onClick={() => handleStatusChange(data.Email, 'pending')}>Pending</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleStatusChange(data.Email, 'not-verified')}>Not Verified</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleStatusChange(data.Email, 'verified')}>Verified</Dropdown.Item>
+                    </DropdownButton>
+                </td>
+                <td className='act-btn'>
+                    <a onClick={() => onDelete(data.Email)} className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons">&#xE872;</i></a>
+                </td>
+            </tr>
+        ))}
+    </tbody>
+</table>
+
             </div>
         </div>  
         {showModal? 
