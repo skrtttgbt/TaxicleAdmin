@@ -18,7 +18,6 @@ function Home() {
   useEffect(()=>{
     axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
     .then(res => {
-      console.log(res.data)
       if(res.data.user) {
         navigate('/dashboard')
       }else{

@@ -5,7 +5,7 @@ import { Modal, Carousel, DropdownButton, Dropdown } from 'react-bootstrap';
 import { FaRegEye } from "react-icons/fa";
 import ImageModal from './ImageModal'; 
 import { imageDB } from '../config/config'
-import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, listAll, ref } from "firebase/storage";
 
 function UserManagement() {
     const [userId , setUserId] = useState([])
@@ -17,7 +17,7 @@ function UserManagement() {
     const navigate = useNavigate() 
 
     useEffect(()=>{
-        axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
+        axios.get('https://taxicleserver.onrender.com/admin' ,{withCredentials:true})
         .then(res => {
             console.log(res.data)
           if(res.data.Login) {
@@ -27,6 +27,7 @@ function UserManagement() {
           }
         }).catch(err =>console.log(err));
     },[])
+
     useEffect(()=>{
         axios.get('https://taxicleserver.onrender.com/admin-user')
         .then(res => {
