@@ -19,8 +19,7 @@ function UserManagement() {
     useEffect(()=>{
         axios.get('https://taxicleserver.onrender.com/admin' ,{withCredentials:true})
         .then(res => {
-            console.log(res.data)
-          if(res.data.Login) {
+          if(res.data.valid) {
             navigate('/user-management')
           }else{
             navigate('/')
@@ -160,13 +159,13 @@ function UserManagement() {
                             <td>{data.PlateNum}</td>
                             <td>{data.LicenseNum}</td>
                             <td className='view-btn'>
-                                {/* {traverseImg(data.Email) }
+                                {traverseImg(data.Email) }
                                 {
                                 Images.map(dataVal=><div>
                                             <img src={dataVal} height="200px" width="200px" />
                                             <br/> 
                                         </div>)
-                                                } */}
+                                                }
                             </td>
                             <td>{/* Dropdown for selecting status */}
                                 <DropdownButton id={`dropdownMenu${i}`} title="Change Status">
