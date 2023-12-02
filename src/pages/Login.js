@@ -30,7 +30,6 @@ export default function Login(){
     event.preventDefault()
     try {
       axios.post('https://taxicleserver.onrender.com/admin-login', values ,{withCredentials:true})
-      // axios.post('http://localhost:20074/admin-login', values,{withCredentials:true})
       .then(res => {
         console.log(res.data)
         if(res.data.Login){

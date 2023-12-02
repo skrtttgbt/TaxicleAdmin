@@ -17,7 +17,6 @@ function Home() {
   })
   useEffect(()=>{
     axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
-    // axios.get('http://localhost:20074/admin', {withCredentials:true})
     .then(res => {
       console.log(res.data)
       if(res.data.user) {
@@ -28,7 +27,6 @@ function Home() {
     }).catch(err =>console.log(err));
 
     axios.get('https://taxicleserver.onrender.com/admin-user')
-    // axios.get('http://localhost:20074/admin-user',{withCredentials:true})
     .then(res => {
       setUserCount((res.data.data).length)
       setUserId(res.data.data)
