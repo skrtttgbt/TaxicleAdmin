@@ -6,6 +6,7 @@ import { FaRegEye } from "react-icons/fa";
 import ImageModal from './ImageModal'; 
 import { imageDB } from '../config/config'
 import { getDownloadURL, listAll, ref } from "firebase/storage";
+import firebase from 'firebase/app';
 
 function UserManagement() {
     const [userId , setUserId] = useState([])
@@ -104,23 +105,23 @@ function UserManagement() {
           console.log(`Status is not changing for user ${userEmail}`);
         }
       };
-const traverseImg = (email) => {
-  listAll(ref(imageDB, `${email}/`))
-    .then((imgs) => {
-      const promises = imgs.items.map((val) => {
-        return getDownloadURL(val).then((url) => url);
-      });
-
-      return Promise.all(promises);
-    })
-    .then((urls) => {
-      setImg(urls);
-    })
-    .catch((error) => {
-      // Handle any errors here
-      console.error("Error fetching images:", error);
-    });
-};
+      const traverseImg = async (email) => {
+        const storageRef = firebase.storage().ref();
+        const folderRef = storageRef.child(email);
+    
+        try {
+          const result = await folderRef.listAll();
+          const imageUrls = await Promise.all(
+            result.items.map(async (item) => {
+              const url = await item.getDownloadURL();
+              return url;
+            })
+          );
+          setImg(imageUrls);
+        } catch (error) {
+          console.error('Error fetching images:', error);
+        }
+    }
   return (
     <main class="main-container">
         <div class="table-responsive">
@@ -168,10 +169,11 @@ const traverseImg = (email) => {
                             <td>
                                 {traverseImg(data.Email) }
                                 {
-                                Images.map(dataVal=><div>
-                                            <img src={dataVal} height="200px" width="200px" />
-                                            <br/> 
-                                        </div>)
+                                Images.map(dataVal=>
+                                <div>
+                                    <img src={dataVal} height="200px" width="200px" />
+                                    <br/> 
+                                </div>)
                                                 }
                             </td>
                             <td>{/* Dropdown for selecting status */}
