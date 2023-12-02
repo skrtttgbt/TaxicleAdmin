@@ -15,7 +15,6 @@ export default function Login(){
   useEffect(()=>{
     // check session
     axios.get('https://taxicleserver.onrender.com/admin',{withCredentials:true})
-    // axios.get('http://localhost:20074/admin',{withCredentials:true})
     .then(res => {
       if(res.data.Login) {
         navigate('/dashboard')
