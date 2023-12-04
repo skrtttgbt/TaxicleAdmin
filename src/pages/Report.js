@@ -30,9 +30,6 @@ function Report() {
         return moment(date).format('LL');
     }
     const handleCaseEnded = (Email, travelID) => {
-        let formData = new FormData();
-        formData.append('Email', Email);
-        formData.append('travelID', travelID);
       
     axios.post('https://taxicleserver.onrender.com/admin-case', {Email,travelID})
           .then(res => {
