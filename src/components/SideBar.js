@@ -4,6 +4,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import { RiAdminFill } from "react-icons/ri";
 import { FaSignOutAlt } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
+import { GoReport } from "react-icons/go";
 import axios from 'axios';
 
 function SideBar({openSidebarToggle,  OpenSidebar}) {
@@ -34,6 +35,11 @@ function SideBar({openSidebarToggle,  OpenSidebar}) {
             <a href='/user-management'>
                 <li className='sidebar-list-item'>
                     <BsFillPersonLinesFill className='icon'/> USER MANAGEMENT
+                </li>
+            </a>
+            <a href='/Report'>
+                <li className='sidebar-list-item'>
+                    <GoReport className='icon'/> REPORTS
                 </li>
             </a>
             <Link className="signout" to="/" onClick={handleLogOut}>

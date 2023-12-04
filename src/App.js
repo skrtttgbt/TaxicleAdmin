@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import UserManagement from './pages/UserManagement';
 import Login from './pages/Login';
+import Report from './pages/Report';
 
 function App() {
   const [openSidebarToggle, setOpen] = useState(false)
@@ -30,6 +31,13 @@ function App() {
       <Header OpenSidebar={OpenSidebar}/>
       <SideBar openSidebarToggle={openSidebarToggle}  OpenSidebar={OpenSidebar}/>
       <UserManagement/>
+      </div>}></Route>
+
+      <Route path='/report' element={
+      <div className='container-browser grid-container'>
+      <Header OpenSidebar={OpenSidebar}/>
+      <SideBar openSidebarToggle={openSidebarToggle}  OpenSidebar={OpenSidebar}/>
+      <Report/>
       </div>}></Route>
     </Routes>
 

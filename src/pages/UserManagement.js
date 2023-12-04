@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { Modal, Carousel, DropdownButton, Dropdown } from 'react-bootstrap';
-import { FaRegEye } from "react-icons/fa";
 import ImageModal from './ImageModal'; 
-import { imageDB } from '../config/config'
-import { getDownloadURL, listAll, ref } from "firebase/storage";
-import firebase from 'firebase/app';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import { MdOutlineVerified } from "react-icons/md";
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+
 
 function UserManagement() {
     const [userId , setUserId] = useState([])
     const [Result, setResult] = useState([])
-    const [Images, setImg] = useState([])
-
-    const [showModal, setShowModal] = useState(false); // State to control modal visibility
-    const [selectedImages, setSelectedImages] = useState([]); // State to store selected image path
+    const [lgShow, setLgShow] = useState(false);
+    const [folder, setFolder] = useState()
+    const [verified, setVerified] = useState()
     const navigate = useNavigate() 
 
     useEffect(()=>{
@@ -35,17 +35,8 @@ function UserManagement() {
             setResult(res.data.data)
         }
              ).catch(err => console.log(err))
-    },[])
+    },[Result])
 
-    const handleImageClick = (images) => {
-        setSelectedImages(images.map((image) => process.env.PUBLIC_URL + image));
-        setShowModal(true);
-    };
-    
-    const handleCloseModal = () => {
-        setSelectedImages([]); // Clear selected images when closing modal
-        setShowModal(false);
-    };
 
     function filter(event) {
         const value = event.target.value.toLowerCase()
@@ -75,73 +66,40 @@ function UserManagement() {
         }
              ).catch(err => console.log(err))
     }
-    const handleStatusChange = (userEmail, newStatus) => {
-        // Find the user by email
-        const userToUpdate = userId.find(user => user.Email === userEmail);
-      
-        // Check if the status is actually changing
-        if (userToUpdate && userToUpdate.Status !== newStatus) {
-          // Update the status
-          userToUpdate.Status = newStatus;
-      
-          // Update the state
-          setUserId([...userId]);
-      
-          // Implement the logic to update the user status in the backend
-          axios.post(`https://taxicleserver.onrender.com/update-user-status/${userEmail}`, { status: newStatus })
-            .then(res => {
-              // Handle the response if needed
-              console.log(`Status updated successfully to ${newStatus}`);
-            })
-            .catch(err => {
-              // Handle errors
-              console.log(err);
-              // Revert the local state change if the backend call fails
-              userToUpdate.Status = userToUpdate.Status; // Set it back to the original status
-              setUserId([...userId]);
-            });
-        } else {
-          // Log or handle the case where the status is not changing
-          console.log(`Status is not changing for user ${userEmail}`);
+
+    const handleApprove = (email) =>{
+      axios.post('https://taxicleserver.onrender.com/admin-approve', {email}) 
+      .then(res => {
+        if(res.data.message === 'success') {
+            navigate('/user-management')
         }
-      };
-      const traverseImg = async (email) => {
-        const storageRef = firebase.storage().ref();
-        const folderRef = storageRef.child(email);
-    
-        try {
-          const result = await folderRef.listAll();
-          const imageUrls = await Promise.all(
-            result.items.map(async (item) => {
-              const url = await item.getDownloadURL();
-              return url;
-            })
-          );
-          setImg(imageUrls);
-        } catch (error) {
-          console.error('Error fetching images:', error);
-        }
+      }).catch(err => console.log(err))
+      axios.get('https://taxicleserver.onrender.com/admin-user')
+          .then(res => {
+              setUserId(res.data.data)
+              setResult(res.data.data)
+          }).catch(err => console.log(err))
     }
   return (
-    <main class="main-container">
-        <div class="table-responsive">
-            <div class="table-wrapper">
-                <div class="table-title">
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <div class="user-text">
-                                <h1>User lists</h1>
-                            </div>
+    <main className="main-container">
+        <div className="table-responsive">
+            <div className="table-wrapper">
+                <div className="table-title">
+                    <div className="table_header d-flex align-items-center justify-content-start">
+                        
+                        <div className="user-text">
+                            <h1>User lists</h1>
                         </div>
-                        <div class="col-sm-4">
-                            <div class="search-box">
-                                <i class="material-icons">&#xE8B6;</i>
-                                <input type="text" class="form-control" placeholder="Search&hellip;" onChange={filter}/>
-                            </div>
-                        </div>
+                     
+                    </div>
+                    <div className="searchbox-holder d-flex align-items-center justify-content-start" >
+                          <div className="search-box">
+                            <input type="text" className="form-control " placeholder="Search&hellip;" onChange={filter}/>
+                            <i className="material-icons">&#xE8B6;</i>
+                          </div>    
                     </div>
                 </div>
-                <table class="table table-striped table-hover table-bordered">
+                <table className="table table-striped table-hover table-bordered">
                     <thead>
                         <tr>
                             <th>UserID</th>
@@ -151,13 +109,13 @@ function UserManagement() {
                             <th>User Type</th>
                             <th>Plate Number</th>
                             <th>License Number</th>
-                            <th>Upload</th>
-                            <th>Status</th>
+                            <th>Documents</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        { Result.map((data, i) =>(
+                    {Result ? (
+                        Result.map((data, i) =>(
                         <tr key={i}>
                             <td>{data.idusers}</td>
                             <td>{(data.FirstName+ " " + data.LastName).toUpperCase()}</td>
@@ -166,36 +124,55 @@ function UserManagement() {
                             <td>{data.UserType}</td>
                             <td>{data.PlateNum}</td>
                             <td>{data.LicenseNum}</td>
-                            <td>
-                                {traverseImg(data.Email) }
-                                {
-                                Images.map(dataVal=>
-                                <div>
-                                    <img src={dataVal} height="200px" width="200px" />
-                                    <br/> 
-                                </div>)
-                                                }
-                            </td>
-                            <td>{/* Dropdown for selecting status */}
-                                <DropdownButton id={`dropdownMenu${i}`} title="Change Status">
-                                    <Dropdown.Item onClick={() => handleStatusChange(data.Email, 'pending')}>Pending</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => handleStatusChange(data.Email, 'not-verified')}>Not Verified</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => handleStatusChange(data.Email, 'verified')}>Verified</Dropdown.Item>
-                                </DropdownButton>
+                            <td className='view-btn'>
+                                {data.imgPassengerID || data.imgMTOP ? (
+                                  data.Verified === 0 ?
+                                <div className='btn-container d-flex justify-content-center align-items-center'>
+                                        <Button className='btn btn-primary' onClick={() => {setVerified(false);setFolder(data.Email); setLgShow(true); }}>View Documents</Button>
+                                </div>
+                                :
+
+                                <div className='btn-container d-flex justify-content-center align-items-center'>
+                                  <MdOutlineVerified  color='#4bb543' fontSize='30px'/>
+                                <Button className='btn btn-primary' onClick={() => {setVerified(true);setFolder(data.Email); setLgShow(true); }}>View Documents</Button>
+                                </div>
+                                ):
+                                data.Verified === 0 ?
+                                 <div className='btn-container d-flex justify-content-center align-items-center'>
+                                <button className='btn btn-success' onClick={() =>handleApprove(data.Email)}>Approve Application</button>
+                                </div>
+                                :
+                                <div className='btn-container d-flex justify-content-center align-items-center'>
+
+                                <p style={{fontSize:'15px'}}><MdOutlineVerified  color='#4bb543' fontSize='30px'/> Verified</p>
+                                </div>
+                                
+                                }
                             </td>
                             <td className='act-btn'>
-                                <a onClick={() => onDelete(data.Email)} className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons">&#xE872;</i></a>
+                                <span onClick={() => onDelete(data.Email)} className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons">&#xE872;</i></span>
                             </td>
-                        </tr>   
-                        ))}       
+                        </tr> 
+                                      ))) : (
+                                        <tr>
+                                        <td colSpan="10" className="text-center">
+                                          Connecting To Server...
+                                        </td>
+                                      </tr>
+                                    )}        
                     </tbody>
                 </table>
             </div>
         </div>  
-        {showModal? 
-        <ImageModal /> :
-        <></>
-        }
+        <Modal id='image_modal'
+        size="lg"
+        show={lgShow}
+        onHide={() => setLgShow(false)}
+        aria-labelledby="example-modal-sizes-title-lg">
+        <Modal.Body>
+            <ImageModal email={folder} verify={verified}/>
+        </Modal.Body>
+      </Modal>
     </main> 
   )
 }

@@ -173,6 +173,9 @@ a:hover {
   font-size: 25px;
 }
 
+.case_end{
+  font-size: 12px;
+}
 
 hr{
   border: none;
@@ -180,6 +183,19 @@ hr{
   box-shadow: 0 6px 7px -3px rgba(0,0,0,0.35);
   margin-top: 2rem;
   margin-bottom: 2rem;
+}
+
+.slick-arrow {
+  height: 100% !important;
+  background-color: rgba(66, 66, 66, 0.555) !important;
+  width: 10% !important;
+}
+
+.slick-next {
+  right: -95px !important;
+}
+.slick-prev{
+  left: -95px !important;
 }
 /* End of Main */
 
@@ -216,6 +232,7 @@ hr{
 }
 .table-wrapper {
   min-width: 1000px;
+  width: 100%;
   background: #fff;
   padding: 20px;
   box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
@@ -288,8 +305,9 @@ table.table td a.view {
 table.table td a.edit {
   color: #FFC107;
 }
-table.table td a.delete {
+table.table td span.delete {
   color: #E34724;
+  cursor: pointer;
 }
 table.table td i {
   font-size: 19px;
@@ -458,7 +476,21 @@ table.table td i {
     font-weight: 600;
   }
 }
-
+.searchbox-holder{
+  position: relative;
+  min-width: 100vw;
+  width: 80%;
+}
+.search-box{
+  display: flex;
+  position: relative;
+  padding-left: 10px;
+  & .material-icons{
+    position: absolute;
+    top: 15px;
+    left: 20px;
+  }
+}
 @media only screen and (min-width: 600px) {
   .home-wrapper{
     max-width: 80%;
@@ -474,4 +506,26 @@ table.table td i {
     margin: auto;
   }
 }
+@media only screen and (max-width: 1490px) {
+  .table-wrapper{
+    min-width: 120vw !important;
+  }
+}
+@media only screen and (max-width: 375px) {
+  .table-wrapper{
+    min-width: 310vw !important;
+  }
+
+  .search-box{
+    flex-direction: column;
+    & .material-icons{
+      left: 13px;
+    }
+    & input{
+      width: 300px;
+      margin-bottom: 10px;
+    }
+  }
+}
+
 
