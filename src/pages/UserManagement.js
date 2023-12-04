@@ -5,9 +5,7 @@ import ImageModal from './ImageModal';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { MdOutlineVerified } from "react-icons/md";
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-
+import emailjs from '@emailjs/browser'
 
 function UserManagement() {
     const [userId , setUserId] = useState([])
@@ -67,10 +65,16 @@ function UserManagement() {
              ).catch(err => console.log(err))
     }
 
-    const handleApprove = (email) =>{
+    const handleApprove = (email, first, last) =>{
+      const emailParams = {
+        email: email,
+        to_name: `${first} ${last}`,
+        message: 'Your Account has been Verified by Taxicle App Tarlac',
+      };
       axios.post('https://taxicleserver.onrender.com/admin-approve', {email}) 
       .then(res => {
         if(res.data.message === 'success') {
+          emailjs.send('service_h92799f', 'template_q66g5k9', emailParams, 'Er633wHTaIwgFizQn');
             navigate('/user-management')
         }
       }).catch(err => console.log(err))
@@ -139,7 +143,7 @@ function UserManagement() {
                                 ):
                                 data.Verified === 0 ?
                                  <div className='btn-container d-flex justify-content-center align-items-center'>
-                                <button className='btn btn-success' onClick={() =>handleApprove(data.Email)}>Approve Application</button>
+                                <button className='btn btn-success' onClick={() =>handleApprove(data.Email, data.FirstName, data.LastName)}>Approve Application</button>
                                 </div>
                                 :
                                 <div className='btn-container d-flex justify-content-center align-items-center'>
